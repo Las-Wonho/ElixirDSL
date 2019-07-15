@@ -1,19 +1,23 @@
 defmodule Message do
+
   def send(block) do
   end
+
   def to(user) do
     Agent.update(MessageMember, fn x -> [user | x] end)
   end
+
   def msg(message) do
     Agent.update(MessageString, fn x -> message end)
   end
+
   def time(count, type) do
     users = Agent.get(MessageMember, fn x -> x end)
     message = Agent.get(MessageString, fn x -> x end)
-
     sender(fn -> Enum.each(users, fn user ->
-      Agent.update(Messages, fn x -> Map.put(x, user, message) end)
-    end)end, count)
+        Agent.update(Messages, fn x -> Map.put(x, user, message) end)
+      end)
+    end, count)
   end
 
   def sender(f, timeout) do
@@ -22,6 +26,7 @@ defmodule Message do
       f.()
     end)
   end
+
 end
 
 {:ok, pid} = Agent.start_link(fn -> %{} end, name: Messages)
