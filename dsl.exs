@@ -28,25 +28,30 @@ end
 {:ok, pid} = Agent.start_link(fn -> "" end, name: MessageString)
 {:ok, pid} = Agent.start_link(fn -> [] end, name: MessageMember)
 
+
+# TEST-1
 Message.send do
   Message.msg("hello")
   Message.to("las")
   Message.to("dalgona")
-  Message.time(10, "sec")
+  Message.time(100, "sec")
 end
 
-#Message.send
-
-# Message.send([do: ( to.("las"); msg.("hello") )])
-
+# ASSERT
+IO.puts(Agent.get(Messages, fn x -> x["las"] end) == nil)
+IO.puts(Agent.get(Messages, fn x -> x["dalgona"] end) == nil)
+:timer.sleep(120)
 IO.puts(Agent.get(Messages, fn x -> x["las"] end) == "hello")
 IO.puts(Agent.get(Messages, fn x -> x["dalgona"] end) == "hello")
 
-
+# TEST-2
 Message.send do
   Message.msg("hi")
   Message.to("user1")
   Message.time(10, "min")
 end
 
+# ASSERT
+IO.puts(Agent.get(Messages, fn x -> x["user1"] end) == nil)
+:timer.sleep(120)
 IO.puts(Agent.get(Messages, fn x -> x["user1"] end) == "hi")
